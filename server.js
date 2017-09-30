@@ -7,17 +7,32 @@ let hostAddress = "0.0.0.0";
 
 
 
-const server = net.createServer((socket) => {
+let server = net.createServer((socket) => {
   clients.push(socket);
 
-  socket.on('data', function(data) {
-    var adminId = data.toString().trim();
-    console.log(adminId);
 
-    //var clientId = data
+  socket.on('data', (data) => {
+    console.log(data.toString());
+    // socket.setEncoding('utf8');
+    // socket.write("connected");
+    // process.stdin.pipe(socket);
+  });
+  socket.on('end', () => {
+    console.log("client disconnected");
   });
 
+  socket.write(`data\r\n`);
+  socket.pipe(socket);
 
 });
 
-console.log("hello world");
+  server.on('error', (err) => {
+    throw err;
+  });
+
+server.listen({host: hostAddress, port: portAddress}, function(){
+  console.log('server listening on ' + hostAddress + " : " + portAddress);
+  console.log(clients);
+});
+
+// console.log("hello world");
